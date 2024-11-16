@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+    tools {
+        maven 'Maven'
+    }
+    environment {
+        IMAGE_NAME = 'ashishhiggins/course-catalogue'  // Image name
+    }
+    stages{
+        stage('Build Maven'){
+            steps{
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/ashishhiggins/CourseCatalogue.git']])
+                bat 'mvn clean install'
+            }
+        }
+        stage('Build Docker Image'){
+            steps{
+                script{
+                    bat 'docker build -t %IMAGE_NAME% .'
+                }
+            }
+        }
+        stage('Deploy Docker Container') {
+            steps {
+                script {
+                    // Run the Docker container
+                    bat "docker run -d -p 9090:9090 %IMAGE_NAME%"
+                }
+            }
+        }
+    }
+
+}

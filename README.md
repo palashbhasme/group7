@@ -1,1 +1,3 @@
-# group7
+﻿# CourseCatalogue
+
+Poll SCM test
